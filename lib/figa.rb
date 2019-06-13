@@ -5,7 +5,7 @@ require 'net/http'
 
 module Figa
 
-  VERSION = '0.0.1'
+  VERSION = '0.1.0'
 
   USER_AGENT = "Figa - https://github.com/jmettraux/figa - #{VERSION}"
   API_ROOT_URI = 'https://api.openfigi.com/v2'
