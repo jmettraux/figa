@@ -108,7 +108,7 @@ module Figa
 
       req.set_header('User-Agent', USER_AGENT)
       req.set_header('Accept', 'application/json')
-# TODO api key
+      req.set_header('X-OPENFIGI-APIKEY', @api_key) if @api_key
 
       u = URI(uri)
 

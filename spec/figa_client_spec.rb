@@ -10,13 +10,17 @@ require 'spec_helper'
 
 describe Figa::Client do
 
+  before :each do
+
+    k = File.read('.api.key').strip rescue nil
+    @client = Figa::Client.new(k)
+  end
+
   describe '#map' do
 
     it 'returns mappings' do
 
-      c = Figa::Client.new
-
-      r = c.map(isin: 'US4592001014')
+      r = @client.map(isin: 'US4592001014')
 
       expect(r.class).to eq(Array)
       expect(r.size).to eq(1)
@@ -29,23 +33,19 @@ describe Figa::Client do
 
     it 'searches' do
 
-      c = Figa::Client.new
-
-      r = c.search('ibm')
+      r = @client.search('ibm')
 
       expect(r.class).to eq(Hash)
       expect(r.keys).to eq(%w[ data next ])
       expect(r._elapsed).to be > 0.0
-      expect(r._client).to eq(c)
+      expect(r._client).to eq(@client)
       expect(r._response.class).to eq(Net::HTTPOK)
       expect(r['data'].first['name']).to eq('Ibm')
     end
 
     it 'searches (advanced)' do
 
-      c = Figa::Client.new
-
-      r = c.search(query: 'ibm')
+      r = @client.search(query: 'ibm')
 
       expect(r.class).to eq(Hash)
       expect(r.keys).to eq(%w[ data next ])
