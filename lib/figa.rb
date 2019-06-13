@@ -18,23 +18,11 @@ module Figa
       @enum_values = {}
     end
 
-    def map(h)
+    def map(array_or_hash)
 
-      k0 = h.is_a?(Hash) ? h.keys.first.to_s : nil
+      a = to_mapping_parameter_array(array_or_hash)
 
-      if k0 && h.size == 1 && enum_values('idType').include?(k0)
-
-        h = { idType: h.keys.first, idValue: h.values.first }
-      end
-
-      validate(h)
-
-      fail ArgumentError.new("parameter 'idType' is missing"
-        ) unless h[:idType] || h['idType']
-      fail ArgumentError.new("parameter 'idValue' is missing"
-        ) unless h[:idValue] || h['idValue']
-
-      post('/mapping', h)
+      post('/mapping', a)
     end
 
     def search(h)
@@ -51,35 +39,54 @@ module Figa
 
     protected
 
+    def to_mapping_parameter_array(aoh)
+
+      a = aoh.is_a?(Array) ? aoh : [ aoh ]
+
+      id_types = enum_values('idType')
+
+      a.collect do |h|
+
+        k0 = h.is_a?(Hash) ? h.keys.first.to_s : nil
+        k0 = k0.upcase if k0
+        k0 = "ID_#{k0}" if k0 && ! id_types.include?(k0)
+
+        if k0 && h.size == 1 && id_types.include?(k0)
+
+          h = { idType: k0, idValue: h.values.first }
+        end
+
+        validate(h)
+
+        fail ArgumentError.new("parameter 'idType' is missing"
+          ) unless h[:idType] || h['idType']
+        fail ArgumentError.new("parameter 'idValue' is missing"
+          ) unless h[:idValue] || h['idValue']
+
+        h
+      end
+    end
+
     ENUM_KEYS = %w[
       idType exchCode micCode currency marketSecDes securityType securityType2 ]
 
-    def list_enum_values(key)
-
-      #fail ArgumentError.new(
-      #  "key #{key.inspect} not included in #{KEYS.inspect}"
-      #) unless KEYS.include?(key)
-
-      get('/mapping/values/' + key)
-    end
-
     def enum_values(key)
 
-      @enum_values[key] ||= list_enum_values(key)
+      @enum_values[key] ||= get('/mapping/values/' + key)['values']
     end
 
     def validate(h)
+
+      fail ArgumentError.new("#{h.inspect} is not a Hash") unless h.is_a?(Hash)
 
       h.each do |k, v|
 
         sk = k.to_s
         next unless ENUM_KEYS.include?(sk)
 
-        vs = (@enum_values[sk] ||= list_enum_values(key))
-
         fail ArgumentError.new(
           "value #{v.inspect} is not a valid value for key #{k.inspect}"
-        ) unless enum_values(keys).include?(v)
+        ) unless enum_values(sk).include?(v)
       end
     end
 
@@ -110,17 +117,16 @@ module Figa
       t = Net::HTTP.new(u.host, u.port)
       t.use_ssl = (u.scheme == 'https')
 #t.set_debug_output($stdout)
-#t.set_debug_output($stdout) if u.to_s.match(/search/)
+#t.set_debug_output($stdout) if uri.match(/search/)
 
       res = t.request(req)
 
-      #class << res; attr_accessor :_elapsed; end
-      #res._elapsed = monow - t0
-
       j = JSON.parse(res.body)
-      def j._response; res; end
-      j['_elapsed'] = monow - t0
-# TODO j['next']
+        #
+      class << j; attr_accessor :_response, :_client, :_elapsed; end
+      j._response = res
+      j._client = self
+      j._elapsed = monow - t0
 
       j
     end
