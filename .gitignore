@@ -17,3 +17,5 @@ Gemfile.lock
 
 pkg/
 
+.api.key
+
