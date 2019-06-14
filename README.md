@@ -64,7 +64,7 @@ r = client.map([
 ```
 
 Query for search ([/v2/search](https://www.openfigi.com/api#post-v2-search)):
-```
+```ruby
 r = client.search('ibm')
 r = client.search(query: 'ibm')
 r = client.search('ibm', exchCode: 'US')
