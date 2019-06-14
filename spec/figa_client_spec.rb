@@ -96,6 +96,19 @@ describe Figa::Client do
       expect(r.keys).to eq(%w[ data next ])
       expect(r['data'].first['name']).to eq('INTL BUSINESS MACHINES CORP')
     end
+
+    it 'iterates the search thanks to #next' do
+
+      r = @client.search(query: 'ibm')
+
+      expect(r['data'].first['figi']).to eq('BBG00196W5Z9')
+      expect(r['data'].first['ticker']).to eq('IBMD=4')
+
+      r = r.next
+
+      expect(r['data'].first['figi']).to eq('BBG000BLNR78')
+      expect(r['data'].first['ticker']).to eq('IBM')
+    end
   end
 end
 

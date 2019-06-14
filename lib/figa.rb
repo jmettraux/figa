@@ -97,7 +97,7 @@ module Figa
 
     def request(method, uri, data=nil)
 
-      uri = API_ROOT_URI + uri
+      uri = API_ROOT_URI + uri unless uri.match(/\Ahttps:\/\//)
 
       req = (method == :post ? Net::HTTP::Post : Net::HTTP::Get).new(uri)
       req.instance_eval { @header.clear }
@@ -125,10 +125,21 @@ module Figa
 
       j = JSON.parse(res.body)
         #
-      class << j; attr_accessor :_response, :_client, :_elapsed; end
+      class << j
+        attr_accessor :_response, :_client, :_elapsed, :_method, :_uri, :_form
+      end
+        #
       j._response = res
       j._client = self
       j._elapsed = monow - t0
+      j._method = method
+      j._uri = uri
+      j._form = data
+        #
+      def j.next
+        n = self['next']; return nil unless n && n.is_a?(String)
+        _client.send(:request, _method, _uri, _form.merge(start: n))
+      end if j.is_a?(Hash)
 
       j
     end

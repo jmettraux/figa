@@ -100,6 +100,19 @@ pp r
   #    ...
 ```
 
+Search and `#next`:
+```ruby
+r = client.search('ibm')
+  #
+  # grab the first "page" of results
+
+r = r.next
+  #
+  # grab the next page of results
+
+# ...
+```
+
 
 ## license
 
