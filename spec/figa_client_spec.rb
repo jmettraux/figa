@@ -58,7 +58,7 @@ describe Figa::Client do
 
   describe '#search' do
 
-    it 'searches' do
+    it 'searches (s)' do
 
       r = @client.search('ibm')
 
@@ -70,13 +70,31 @@ describe Figa::Client do
       expect(r['data'].first['name']).to eq('Ibm')
     end
 
-    it 'searches (advanced)' do
+    it 'searches (h)' do
 
       r = @client.search(query: 'ibm')
 
       expect(r.class).to eq(Hash)
       expect(r.keys).to eq(%w[ data next ])
       expect(r['data'].first['name']).to eq('Ibm')
+    end
+
+    it 'searches (h+)' do
+
+      r = @client.search(query: 'ibm', exchCode: 'US')
+
+      expect(r.class).to eq(Hash)
+      expect(r.keys).to eq(%w[ data next ])
+      expect(r['data'].first['name']).to eq('INTL BUSINESS MACHINES CORP')
+    end
+
+    it 'searches (s + h)' do
+
+      r = @client.search('ibm', exchCode: 'US')
+
+      expect(r.class).to eq(Hash)
+      expect(r.keys).to eq(%w[ data next ])
+      expect(r['data'].first['name']).to eq('INTL BUSINESS MACHINES CORP')
     end
   end
 end

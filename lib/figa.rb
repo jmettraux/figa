@@ -25,9 +25,9 @@ module Figa
       post('/mapping', a)
     end
 
-    def search(h)
+    def search(q, h={})
 
-      h = { query: h } unless h.is_a?(Hash)
+      h = q.is_a?(String) ? h.merge(query: q) : q
 
       validate(h)
 
