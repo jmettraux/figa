@@ -47,13 +47,15 @@ module Figa
 
       a.collect do |h|
 
-        k0 = h.is_a?(Hash) ? h.keys.first.to_s : nil
-        k0 = k0.upcase if k0
-        k0 = "ID_#{k0}" if k0 && ! id_types.include?(k0)
-
-        if k0 && h.size == 1 && id_types.include?(k0)
-
-          h = { idType: k0, idValue: h.values.first }
+        oldk, itk =
+          h.keys.inject(nil) { |r, k|
+            next r if r
+            kk = k.upcase; next [ k, kk ] if id_types.include?(kk)
+            kk = "ID_#{kk}"; next [ k, kk ] if id_types.include?(kk)
+            nil }
+        if oldk
+          h[:idType] = itk
+          h[:idValue] = h.delete(oldk)
         end
 
         validate(h)

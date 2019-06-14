@@ -27,6 +27,33 @@ describe Figa::Client do
       expect(r[0]['data'].size).to be > 1
       expect(r[0]['data'][0]['name']).to eq('INTL BUSINESS MACHINES CORP')
     end
+
+    it 'queries with more parameters' do
+
+      r = @client.map(isin: 'US4592001014', exchCode: 'US')
+
+      expect(r.class).to eq(Array)
+      expect(r.size).to eq(1)
+      expect(r[0]['data'].size).to eq(1)
+      expect(r[0]['data'][0]['figi']).to eq('BBG000BLNNH6')
+      expect(r[0]['data'][0]['name']).to eq('INTL BUSINESS MACHINES CORP')
+    end
+
+    it 'queries for multiple items' do
+
+      r = @client.map([
+        { isin: 'US4592001014' },
+        { idType: 'ID_WERTPAPIER', idValue: '851399', exchCode: 'US' } ])
+
+      expect(r.class).to eq(Array)
+      expect(r.size).to eq(2)
+      expect(r[0]['data'].size).to be > 1
+      expect(r[0]['data'][0]['name']).to eq('INTL BUSINESS MACHINES CORP')
+      expect(r[0]['data'][0]['ticker']).to eq('IBM')
+      expect(r[1]['data'].size).to eq(1)
+      expect(r[1]['data'][0]['name']).to eq('INTL BUSINESS MACHINES CORP')
+      expect(r[1]['data'][0]['ticker']).to eq('IBM')
+    end
   end
 
   describe '#search' do
