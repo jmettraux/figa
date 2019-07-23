@@ -12,10 +12,12 @@ module Figa
 
   class Client
 
+    attr_reader :enum_values
+
     def initialize(api_key=nil)
 
       @api_key = api_key
-      @enum_values = {}
+      @enum_values = load_enum_values
     end
 
     def map(array_or_hash)
@@ -43,7 +45,7 @@ module Figa
 
       a = aoh.is_a?(Array) ? aoh : [ aoh ]
 
-      id_types = enum_values('idType')
+      id_types = @enum_values['idType']
 
       a.collect do |h|
 
@@ -72,9 +74,15 @@ module Figa
     ENUM_KEYS = %w[
       idType exchCode micCode currency marketSecDes securityType securityType2 ]
 
-    def enum_values(key)
+#    def enum_values(key)
+#
+#      @enum_values[key] ||= get('/mapping/values/' + key)['values']
+#    end
 
-      @enum_values[key] ||= get('/mapping/values/' + key)['values']
+    def load_enum_values
+
+      ENUM_KEYS
+        .inject({}) { |h, k| h[k] = get("/mapping/values/#{k}")['values']; h }
     end
 
     def validate(h)
@@ -88,7 +96,7 @@ module Figa
 
         fail ArgumentError.new(
           "value #{v.inspect} is not a valid value for key #{k.inspect}"
-        ) unless enum_values(sk).include?(v)
+        ) unless @enum_values[sk].include?(v)
       end
     end
 
@@ -122,6 +130,8 @@ module Figa
 #t.set_debug_output($stdout) if uri.match(/search/)
 
       res = t.request(req)
+#p res.class
+#res.each_header { |h| p [ h, res.header[h] ] }
 
       j = JSON.parse(res.body)
         #

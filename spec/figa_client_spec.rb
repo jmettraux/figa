@@ -56,6 +56,18 @@ describe Figa::Client do
     end
   end
 
+  describe '#enum_values' do
+
+    it 'returns a map key -> values' do
+
+      expect(
+        @client.enum_values.keys.sort
+      ).to eq(
+        Figa::Client::ENUM_KEYS.sort
+      )
+    end
+  end
+
   describe '#search' do
 
     it 'searches (s)' do
