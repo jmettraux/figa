@@ -104,10 +104,19 @@ describe Figa::Client do
       expect(r['data'].first['figi']).to eq('BBG00196W5Z9')
       expect(r['data'].first['ticker']).to eq('IBMD=4')
 
+      figi0 = r['data'].first['figi']
+      ticker0 = r['data'].first['ticker']
+
       r = r.next
 
-      expect(r['data'].first['figi']).to eq('BBG000BLNR78')
+      expect(r['data'].first['figi']).not_to eq(figi0)
+      expect(r['data'].first['ticker']).not_to eq(ticker0)
+
+      expect(r['data'].first['figi']).to eq('BBG000BLNS85')
       expect(r['data'].first['ticker']).to eq('IBM')
+
+#pp @client.search(query: 'UOL', securityType2: 'Common Stock', exchCode: 'SP')
+#pp @client.search(query: 'UOL', exchCode: 'SP')
     end
   end
 end
