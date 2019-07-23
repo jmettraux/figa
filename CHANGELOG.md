@@ -2,6 +2,9 @@
 # CHANGELOG.md
 
 
+## figa 0.2.0  not yet released
+
+
 ## figa 0.1.0  released 2019-06-14
 
 * Refine Figa::Client #map and #search
