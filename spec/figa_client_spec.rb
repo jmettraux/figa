@@ -124,7 +124,7 @@ describe Figa::Client do
       expect(r['data'].first['figi']).not_to eq(figi0)
       expect(r['data'].first['ticker']).not_to eq(ticker0)
 
-      expect(r['data'].first['figi']).to eq('BBG000BLNS85')
+      expect(r['data'].first['figi']).to match(/\ABBG000[A-Z0-9]{6}\z/)
       expect(r['data'].first['ticker']).to eq('IBM')
 
 #pp @client.search(query: 'UOL', securityType2: 'Common Stock', exchCode: 'SP')
