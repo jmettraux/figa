@@ -2,6 +2,11 @@
 # CHANGELOG.md
 
 
+## figa 0.2.1  released 2019-08-13
+
+* re-release
+
+
 ## figa 0.2.0  released 2019-08-12
 
 * Load enum values at client instantiation
