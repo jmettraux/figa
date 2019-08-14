@@ -113,8 +113,8 @@ describe Figa::Client do
 
       r = @client.search(query: 'ibm')
 
-      expect(r['data'].first['figi']).to eq('BBG00196W5Z9')
-      expect(r['data'].first['ticker']).to eq('IBMD=4')
+      expect(r['data'].first['figi']).to match(/\ABBG00[A-Z0-9]{7}\z/)
+      expect(r['data'].first['ticker']).to match(/IBM/)
 
       figi0 = r['data'].first['figi']
       ticker0 = r['data'].first['ticker']
@@ -124,8 +124,8 @@ describe Figa::Client do
       expect(r['data'].first['figi']).not_to eq(figi0)
       expect(r['data'].first['ticker']).not_to eq(ticker0)
 
-      expect(r['data'].first['figi']).to match(/\ABBG000[A-Z0-9]{6}\z/)
-      expect(r['data'].first['ticker']).to eq('IBM')
+      expect(r['data'].first['figi']).to match(/\ABBG00[A-Z0-9]{7}\z/)
+      expect(r['data'].first['ticker']).to match(/IBM/)
 
 #pp @client.search(query: 'UOL', securityType2: 'Common Stock', exchCode: 'SP')
 #pp @client.search(query: 'UOL', exchCode: 'SP')
