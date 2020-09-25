@@ -10,7 +10,7 @@ Gem::Specification.new do |s|
   s.platform = Gem::Platform::RUBY
   s.authors = [ 'John Mettraux' ]
   s.email = [ 'jmettraux@gmail.com' ]
-  s.homepage = 'http://github.com/jmettraux/figa'
+  s.homepage = 'https://github.com/jmettraux/figa'
   s.license = 'MIT'
   s.summary = 'A Ruby client to the OpenFIGI API v2'
 
